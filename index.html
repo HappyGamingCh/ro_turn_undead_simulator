@@ -98,7 +98,10 @@
                 const svgRect = e.currentTarget.getBoundingClientRect();
                 const mouseX = e.clientX - svgRect.left;
                 
-                let ratio = (mouseX - padding) / chartWidth;
+                // Scale mouse position from screen to SVG viewBox coordinates
+                const scaledMouseX = (mouseX / svgRect.width) * width;
+                
+                let ratio = (scaledMouseX - padding) / chartWidth;
                 ratio = Math.max(0, Math.min(1, ratio));
                 
                 const hp = 100 - (ratio * 100);
@@ -350,16 +353,16 @@
                                             <ShieldAlert className="w-5 h-5 text-amber-600" />
                                         </div>
                                         <div>
-                                            <h3 className="text-xs font-bold text-amber-800 uppercase tracking-wide">For Max Cap (70%)</h3>
+                                            <h3 className="text-xs font-bold text-amber-800 uppercase tracking-wide">Maximum Success Rate</h3>
                                             <div className="text-sm text-amber-900 mt-1 font-medium">
                                                 {(() => {
                                                     const baseFactor = (skillLv * 20) + intStat + lukStat + baseLv;
-                                                    const requiredHp = (baseFactor - 500) / 200;
+                                                    const requiredHpRatio = (baseFactor - 500) / 200;
                                                     
-                                                    if (requiredHp >= 1) return <span className="text-emerald-600 font-bold">Max Chance Already!</span>;
-                                                    if (requiredHp <= 0) return <span className="text-red-500">Unreachable with current stats</span>;
+                                                    if (requiredHpRatio >= 1) return <span className="text-emerald-600 font-bold">Max Rate: 70% at 100% HP</span>;
+                                                    if (requiredHpRatio <= 0) return <span className="text-emerge-600 font-bold">Max Rate: 70% at {(requiredHpRatio * 100).toFixed(0)}% HP</span>;
                                                     
-                                                    return <span>Enemy HP must fall below <strong className="text-lg block mt-1">{(requiredHp * 100).toFixed(0)}%</strong></span>;
+                                                    return <span>Max Rate: <strong className="text-lg">70%</strong> at <strong className="text-amber-700">{(requiredHpRatio * 100).toFixed(0)}% HP</strong></span>;
                                                 })()}
                                             </div>
                                         </div>
